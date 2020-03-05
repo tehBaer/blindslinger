@@ -13,18 +13,15 @@ public class RayCastShootComplete : MonoBehaviour
     private Camera fpsCam;                                              // Holds a reference to the first person camera
     private WaitForSeconds shotDuration = new WaitForSeconds(0.02f);    // WaitForSeconds object used by our ShotEffect coroutine, determines time laser line will remain visible
     private AudioSource gunAudio;                                       // Reference to the audio source which will play our shooting sound effect
-    private LineRenderer laserLine;      
-    public Light bloom1;  
-    public Light bloom2;                               // Reference to the LineRenderer component which will display our laserline
-                             // Reference to the LineRenderer component which will display our laserline
+    private LineRenderer laserLine;                                     // Reference to the LineRenderer component which will display our laserline
+    public Light bloom1;                                                // Reference to the Light component which will light up parts of the walls
+
+    public Light bloom2;                                                // Reference to the Light component which will light up the area around the bubble 
     private float nextFire;                                             // Float to store the time the player will be allowed to fire again, after firing
     private int shootableMask;                                          // Integer to store the number of the shootable layer
-    public SteamVR_Action_Boolean shootaction;
-    public SteamVR_Input_Sources handType;//which controller
-    public bool triggerbool;
-
-
-
+    public SteamVR_Action_Boolean shootaction;                          // Boolean to store the state of the shooting action
+    public SteamVR_Input_Sources handType;                              // Stores which controller is used
+    public bool triggerbool;                                            // Boolean to store the state of the trigger
 
     void Start()
     {
@@ -40,29 +37,19 @@ public class RayCastShootComplete : MonoBehaviour
         // Get and store the layer number that will be shootable
         shootableMask = 1 << 9;
 
-
+        // Get and store listeners to trigger press and idle triggers
         shootaction.AddOnStateDownListener(TriggerDown, handType);
         shootaction.AddOnStateUpListener(TriggerUp, handType);
-
     }
 
     public void TriggerUp(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        string a = "Trigger is up";
-        Debug.Log(a);
         triggerbool = false;
-
-
     }
     public void TriggerDown(SteamVR_Action_Boolean fromAction, SteamVR_Input_Sources fromSource)
     {
-        string b = "Trigger is down";
-        Debug.Log(b);
         triggerbool = true;
-
     }
-
-
 
     void Update()
     {
@@ -108,15 +95,11 @@ public class RayCastShootComplete : MonoBehaviour
         }
     }
 
-
     private IEnumerator ShotEffect()
     {
         // Play the shooting sound effect
         gunAudio.Play();
         
-        
-
-
         // Turn on our line renderer
         laserLine.enabled = true;
         bloom1.enabled = true;

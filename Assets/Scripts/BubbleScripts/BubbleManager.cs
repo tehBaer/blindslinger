@@ -9,11 +9,10 @@ public class BubbleManager : MonoBehaviour
     public bool BubbleMovement;             // Enables movement in BubbleTrajectory.cs
     public Transform[] spawnPoints;         // TODO: Make single SpawnPoint
 
-
     void Start()
     {
         // Reset values of parameters and enable them
-        ResetParameters("reenable");
+        ResetParameters();
 
         // Make the first bubble silent and stationary
         Bubble.GetComponent<AudioSource>().mute = true;
@@ -26,26 +25,18 @@ public class BubbleManager : MonoBehaviour
         Bubble.GetComponent<BubbleTrajectory>().enabled = true;
         RotatingSpawner.GetComponent<LineRenderer>().enabled = true;
 
-
         // Call the Spawn function after a delay of the spawnTime and then continue to call after the same amount of time.
         InvokeRepeating("Spawn", spawnTime, spawnTime);
-
     }
 
-
-    void ResetParameters(string String){
+    void ResetParameters(){
         Color col = Bubble.GetComponent<Renderer>().sharedMaterial.color;
         col.a = 1f;
         Bubble.GetComponent<Renderer>().sharedMaterial.color = col;
-
+        Bubble.GetComponent<Renderer>().enabled = true;
         Bubble.GetComponent<Light>().intensity = 1f;
-
-        // Currently useless
-        if (String == "reenable"){
-            Bubble.GetComponent<Renderer>().enabled = true;
-            Bubble.GetComponent<Light>().enabled = true;
-            RotatingSpawner.GetComponent<LineRenderer>().enabled = true;
-        }
+        Bubble.GetComponent<Light>().enabled = true;
+        RotatingSpawner.GetComponent<LineRenderer>().enabled = true;
     }
 
     void DecreaseParameters(){
@@ -58,47 +49,27 @@ public class BubbleManager : MonoBehaviour
         // Reduce the intensity of the Bubble's light
         Bubble.GetComponent<Light>().intensity -= 0.2f;
 
+        // Turn off rendering and light if its less than 10% visible
         if (col.a < 0.1f)
         {
             Bubble.GetComponent<Renderer>().enabled = false;
             Bubble.GetComponent<Light>().enabled = false;
             RotatingSpawner.GetComponent<LineRenderer>().enabled = false;
-            ResetParameters("");
-
         }
     }
-
-    void EnableAid(int MissCount){
-        // if 5 miss:
-        // enable linerenderer
-
-        // if 7 miss:
-        // enable weak light
-    }
-
-    void Terminate(int HitCount){
-        // if 10 killed:
-        // Terminate game
-    }
-
-
     public void Spawn()
     {
-        // If there are no Bubbles
+        // Check to see if there are no Bubbles in play
         if (GameObject.Find("Bubble(Clone)") == null)
         {
             // Change the direction of the rotation
             RotatingSpawner.GetComponent<RandomRotation>().RotateAxis();
 
-            // REMOVE
-            int spawnPointIndex = Random.Range(0, spawnPoints.Length);
-
+            // Reduce the transparancy/light of the Bubble to be spawned
             DecreaseParameters();
 
             // Create an instance of the enemy prefab at the spawn point's position and rotation.
-            // REFACTOR
-            Instantiate(Bubble, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+            Instantiate(Bubble, spawnPoints[0].position, spawnPoints[0].rotation);
         }
-
     }
 }

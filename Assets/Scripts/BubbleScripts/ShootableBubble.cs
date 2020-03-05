@@ -9,7 +9,6 @@ public class ShootableBubble : MonoBehaviour
 
     public GameObject SpawnController;
 
-
     //The bubble's current health point total
     [HideInInspector] public int currentHealth = 1;
 
@@ -24,10 +23,7 @@ public class ShootableBubble : MonoBehaviour
             //if health has fallen below zero, deactivate it 
             //gameObject.SetActive (false);
 			Destroy();
-
-        }
-
-        
+        }        
     }
 
 	public void Destroy()
